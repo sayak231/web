@@ -1,25 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { gql } from "apollo-boost";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { setAccessToken } from "./accessToken";
-
-export const ME_ = gql`
-  query {
-    me {
-      id
-      firstname
-      lastname
-      email
-    }
-  }
-`;
-
-const LOGOUT_ = gql`
-  mutation {
-    logout
-  }
-`;
+import { ME_ } from "./Queries";
+import { LOGOUT_ } from "./Queries";
 
 const Header = () => {
   const { loading, error, data } = useQuery(ME_);

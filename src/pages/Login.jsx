@@ -1,24 +1,9 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
 import { setAccessToken } from "../accessToken";
-import { ME_ } from "../Header";
+import { LOGIN_, ME_ } from "../Queries";
 
 const Login = ({ history }) => {
-  const LOGIN_ = gql`
-    mutation Login($email: String!, $password: String!) {
-      login(email: $email, password: $password) {
-        user {
-          id
-          firstname
-          lastname
-          email
-        }
-        accessToken
-      }
-    }
-  `;
-
   const updateCache = (cache, { data }) => {
     if (!data) {
       return null;

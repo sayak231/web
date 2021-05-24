@@ -1,17 +1,8 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { PROTECTED_ } from "../Queries";
 
 const Protected = () => {
-  const PROTECTED_ = gql`
-    query {
-      protected {
-        id
-        firstname
-      }
-    }
-  `;
-
   const { loading, error, data } = useQuery(PROTECTED_, {
     fetchPolicy: "network-only",
   });

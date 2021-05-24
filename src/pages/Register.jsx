@@ -1,24 +1,8 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { SIGNUP_ } from "../Queries";
 
 const Register = ({ history }) => {
-  const SIGNUP_ = gql`
-    mutation Register(
-      $email: String!
-      $password: String!
-      $firstname: String!
-      $lastname: String!
-    ) {
-      signup(
-        email: $email
-        password: $password
-        firstname: $firstname
-        lastname: $lastname
-      )
-    }
-  `;
-
   const [createUser, { loading }] = useMutation(SIGNUP_, {
     onError: (err) => {
       console.log("onError", err);
@@ -51,12 +35,14 @@ const Register = ({ history }) => {
         <input
           type="text"
           value={email}
+          placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div>
         <input
           type="password"
+          placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -65,6 +51,7 @@ const Register = ({ history }) => {
         <input
           type="text"
           value={firstname}
+          placeholder="firstname"
           onChange={(e) => setFirstname(e.target.value)}
         />
       </div>
@@ -72,6 +59,7 @@ const Register = ({ history }) => {
         <input
           type="text"
           value={lastname}
+          placeholder="lastname"
           onChange={(e) => setLastname(e.target.value)}
         />
       </div>
