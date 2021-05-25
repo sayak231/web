@@ -81,8 +81,8 @@ const client = new ApolloClient({
       },
     }),
     onError(({ graphQLErrors, networkError }) => {
-      console.log(graphQLErrors);
-      console.log(networkError);
+      console.log("graphQLErrors", graphQLErrors);
+      console.log("networkError", networkError);
     }),
     requestLink,
     new HttpLink({
