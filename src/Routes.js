@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Protected from "./pages/Protected";
 import Header from "./Header";
+import Log from "./components/Login";
 
 const Routes = () => {
   return (
@@ -16,6 +17,7 @@ const Routes = () => {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/protect" component={Protected} />
+          <Route exact path="/s" component={Log} />
         </Switch>
       </div>
     </BrowserRouter>

@@ -1,11 +1,21 @@
-import React from "react";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useEffect } from "react";
+import { useLazyQuery } from "@apollo/react-hooks";
 import { PROTECTED_ } from "../Queries";
 
 const Protected = () => {
-  const { loading, error, data } = useQuery(PROTECTED_, {
+  const [getCurrentUser, { loading, error, data }] = useLazyQuery(PROTECTED_, {
     fetchPolicy: "network-only",
   });
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      getCurrentUser();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [getCurrentUser]);
   console.log("Protected data", data);
   if (loading) return <div>Loading...</div>;
   if (error) {
@@ -18,7 +28,7 @@ const Protected = () => {
 
   return (
     <div>
-      {data.protected.firstname} {data.protected.id}
+      This route is protected by {data.protected.firstname} {data.protected.id}
     </div>
   );
 };

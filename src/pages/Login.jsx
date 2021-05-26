@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import { setAccessToken } from "../accessToken";
 import { LOGIN_, ME_ } from "../Queries";
+import Log from "../components/Login";
+import { getErrorMessage } from "../utils/getError";
 
 const Login = ({ history }) => {
+  const [error, setError] = useState("");
   const updateCache = (cache, { data }) => {
     if (!data) {
       return null;
@@ -19,50 +22,27 @@ const Login = ({ history }) => {
   const [loginUser, { loading }] = useMutation(LOGIN_, {
     onError: (err) => {
       console.log("onError", err);
+      setError(getErrorMessage(err));
     },
     update: updateCache,
   });
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const handleSubmit = async (email, password) => {
+    try {
+      const response = await loginUser({
+        variables: { email, password },
+      });
+      if (response && response.data) {
+        setAccessToken(response.data.login.accessToken);
+      }
+      history.push("/protect");
+    } catch (e) {
+      console.error("error", e);
+    }
+  };
 
   return (
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        try {
-          const response = await loginUser({
-            variables: { email, password },
-          });
-          if (response && response.data) {
-            setAccessToken(response.data.login.accessToken);
-          }
-          history.push("/");
-        } catch (e) {
-          console.error("error", e);
-        }
-      }}
-    >
-      <div>
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <button disabled={loading} type="submit">
-        login
-      </button>
-    </form>
+    <Log loading={loading} handleSubmit={handleSubmit} graphQlError={error} />
   );
 };
 

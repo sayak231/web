@@ -10,6 +10,7 @@ import { TokenRefreshLink } from "apollo-link-token-refresh";
 import jwtDecode from "jwt-decode";
 
 import App from "./App";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { getAccessToken, setAccessToken } from "./accessToken";
 
 const cache = new InMemoryCache({});
