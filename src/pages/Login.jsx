@@ -1,12 +1,14 @@
-import React, { useState } from "react";
-import { useMutation } from "@apollo/react-hooks";
-import { setAccessToken } from "../accessToken";
+import React, { useState, useContext } from "react";
+import { useMutation } from "@apollo/client";
+import { getAccessTokenContext } from "../contexts/accessToken.js";
 import { LOGIN_, ME_ } from "../Queries";
 import Log from "../components/Login";
 import { getErrorMessage } from "../utils/getError";
+import { Redirect } from "react-router-dom";
 
-const Login = ({ history }) => {
-  const [error, setError] = useState("");
+const Login = ({ setIsLoggedIn }) => {
+  const { setAccessToken } = useContext(getAccessTokenContext());
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const updateCache = (cache, { data }) => {
     if (!data) {
       return null;
@@ -19,11 +21,7 @@ const Login = ({ history }) => {
     });
   };
 
-  const [loginUser, { loading }] = useMutation(LOGIN_, {
-    onError: (err) => {
-      console.log("onError", err);
-      setError(getErrorMessage(err));
-    },
+  const [loginUser, { loading, error }] = useMutation(LOGIN_, {
     update: updateCache,
   });
 
@@ -34,15 +32,20 @@ const Login = ({ history }) => {
       });
       if (response && response.data) {
         setAccessToken(response.data.login.accessToken);
+        setIsLoggedIn(true);
+        setShouldRedirect(true);
       }
-      history.push("/protect");
     } catch (e) {
       console.error("error", e);
     }
   };
-
+  if (shouldRedirect) return <Redirect to="/dashboard" />;
   return (
-    <Log loading={loading} handleSubmit={handleSubmit} graphQlError={error} />
+    <Log
+      loading={loading}
+      handleSubmit={handleSubmit}
+      graphQlError={error ? getErrorMessage(error) : null}
+    />
   );
 };
 

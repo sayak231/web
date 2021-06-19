@@ -1,25 +1,33 @@
-import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Protected from "./pages/Protected";
-import Header from "./Header";
-import Log from "./components/Login";
+import Header from "./pages/Header";
+import DashboardContainer from "./pages/DashboardContainer";
 
 const Routes = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <BrowserRouter>
-      <div>
-        <Header />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/protect" component={Protected} />
-          <Route exact path="/s" component={Log} />
-        </Switch>
-      </div>
+      <Header setIsLoggedIn={setIsLoggedIn} />
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/register" component={Register} />
+        <Route
+          exact
+          path="/login"
+          render={() => <Login setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route
+          exact
+          path="/dashboard"
+          render={() =>
+            isLoggedIn ? <DashboardContainer /> : <Redirect to="/login" />
+          }
+        />
+      </Switch>
     </BrowserRouter>
   );
 };

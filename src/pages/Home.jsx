@@ -1,19 +1,25 @@
 import React from "react";
-import "../styles/home.css";
+import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  Container: {
+    backgroundImage: theme.palette.mainBackgroundColor,
+    height: "92.5vh",
+  },
+}));
 
 const Home = () => {
+  const classes = useStyles();
   return (
-    <div
-      style={{
-        height: "90vh",
-        width: "100vw",
-        backgroundColor: "blue",
-        textAlign: "center",
-        paddingTop: "30vh",
-      }}
+    <Container
+      maxWidth={false}
+      component="div"
+      className={classes.Container}
+      disableGutters
     >
-      <h1>Welcome to TASKS App</h1>
-    </div>
+      Welcome
+    </Container>
   );
 };
 
