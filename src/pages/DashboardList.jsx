@@ -59,12 +59,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DashboardList = ({ getDash }) => {
+const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
   const classes = useStyles();
 
   const [dashboardName, setDashboardName] = useState("");
   const [dashboardDescription, setDashboardDescription] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [showModal, setShowModal] = useState(false);
 
   const {
@@ -93,7 +93,8 @@ const DashboardList = ({ getDash }) => {
     e.preventDefault();
     e.stopPropagation();
     setSelectedIndex(id);
-    getDash({ variables: { id: parseInt(id) } });
+    console.log("handleDashboard");
+    getDash();
   };
 
   const openModal = () => {
@@ -117,6 +118,8 @@ const DashboardList = ({ getDash }) => {
         await refetch();
         if (!getDashboardsLoading) {
           closeModal();
+          setSelectedIndex(response.data.createDashboard.id);
+          getDash();
         }
       }
     } catch (e) {

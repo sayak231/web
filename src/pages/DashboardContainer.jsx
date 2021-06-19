@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DashboardList from "./DashboardList.jsx";
 import DashPage from "./DashPage.jsx";
 import { GET_DASHBOARD } from "../Queries";
@@ -18,7 +18,10 @@ const useStyles = makeStyles(() => ({
 const DashboardContainer = () => {
   const classes = useStyles();
 
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [getDash, { loading, error, data }] = useLazyQuery(GET_DASHBOARD, {
+    variables: { id: parseInt(selectedIndex) },
     fetchPolicy: "network-only",
   });
 
@@ -29,7 +32,11 @@ const DashboardContainer = () => {
       className={classes.Container}
       disableGutters
     >
-      <DashboardList getDash={getDash} />
+      <DashboardList
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
+        getDash={getDash}
+      />
       <DashPage getDash={getDash} loading={loading} error={error} data={data} />
     </Container>
   );
