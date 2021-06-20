@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -20,7 +20,7 @@ import FacebookCircularProgress from "../components/FacebookCircularProgress.jsx
 import CreateDashboardModal from "../components/CreateDashboardModal.jsx";
 import ErrorToast from "../components/ErrorToast.jsx";
 import { getErrorMessage } from "../utils/getError";
-import { GET_DASHBOARDS, CREATE_DASHBOARD, DELETE_DASHBOARD } from "../Queries";
+import { CREATE_DASHBOARD } from "../Queries";
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -56,22 +56,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
+const DashboardList = ({
+  selectedIndex,
+  setSelectedIndex,
+  getDash,
+  getDashboardsLoading,
+  getDashboardsError,
+  getDashboardsData,
+  refetch,
+  handleDelete,
+  deleteDashboardLoading,
+  deleteDashboardError,
+  deleteDashboardData,
+}) => {
   const classes = useStyles();
 
   const [dashboardName, setDashboardName] = useState("");
   const [dashboardDescription, setDashboardDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [disable, setDisable] = useState(true);
 
-  const {
-    loading: getDashboardsLoading,
-    error: getDashboardsError,
-    data: getDashboardsData,
-    refetch,
-  } = useQuery(GET_DASHBOARDS, {
-    fetchPolicy: "network-only",
-    notifyOnNetworkStatusChange: true,
-  });
+  useEffect(() => {
+    if (dashboardName.length < 3 || dashboardDescription.length < 4) {
+      setDisable(true);
+    } else setDisable(false);
+  }, [dashboardName, dashboardDescription]);
 
   useEffect(() => {
     if (getDashboardsData?.getDashboards.length > 0) {
@@ -81,21 +90,13 @@ const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
       setSelectedIndex(-1);
       getDash();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getDashboardsData]);
 
   const [
     createDashboard,
     { loading: createDashboardLoading, error: createDashboardError },
   ] = useMutation(CREATE_DASHBOARD);
-
-  const [
-    deleteDashboard,
-    {
-      loading: deleteDashboardLoading,
-      error: deleteDashboardError,
-      data: deleteDashboardData,
-    },
-  ] = useMutation(DELETE_DASHBOARD);
 
   const openModal = () => {
     setDashboardName("");
@@ -128,23 +129,6 @@ const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
         if (!getDashboardsLoading) {
           closeModal();
           setSelectedIndex(response.data.createDashboard.id);
-        }
-      }
-    } catch (e) {
-      console.error("error", e);
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      const response = await deleteDashboard({
-        variables: {
-          id: parseInt(selectedIndex),
-        },
-      });
-      if (response && response.data) {
-        if (response.data.deleteDashboard === parseInt(selectedIndex)) {
-          await refetch();
         }
       }
     } catch (e) {
@@ -244,6 +228,7 @@ const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
         create={handleCreate}
         setDashboardName={setDashboardName}
         setDashboardDescription={setDashboardDescription}
+        disabled={disable}
         error={
           createDashboardError ? getErrorMessage(createDashboardError) : null
         }

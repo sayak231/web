@@ -1,5 +1,23 @@
 import { gql } from "@apollo/client";
 
+export const ADD_MEMBER = gql`
+  mutation addMembersToDashboard($id: Int!, $memberId: Int!) {
+    addMembersToDashboard(id: $id, memberId: $memberId) {
+      id
+    }
+  }
+`;
+
+export const GET_ALL_USERS = gql`
+  query {
+    getAllUsers {
+      id
+      firstname
+      lastname
+    }
+  }
+`;
+
 export const CREATE_DASHBOARD = gql`
   mutation createDashboard($name: String!, $description: String!) {
     createDashboard(name: $name, description: $description) {
@@ -56,6 +74,11 @@ export const GET_DASHBOARD = gql`
           description
           status
           assigned_to_id
+          assigned_to {
+            id
+            firstname
+            lastname
+          }
           dashboard_belonging_to_id
         }
       }

@@ -30,6 +30,7 @@ const CreateDashboardModal = ({
   setDashboardDescription,
   loading,
   error,
+  disabled,
 }) => {
   const classes = useStyles();
 
@@ -49,7 +50,7 @@ const CreateDashboardModal = ({
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle className={classes.dialog} id="form-dialog-title">
-        CREATE
+        CREATE DASHBOARD
       </DialogTitle>
       <DialogContent className={classes.dialog}>
         <DialogContentText className={classes.label}>
@@ -91,7 +92,12 @@ const CreateDashboardModal = ({
         <Button onClick={close} variant="contained" color="secondary">
           Cancel
         </Button>
-        <Button onClick={create} variant="contained" color="secondary">
+        <Button
+          disabled={disabled}
+          onClick={create}
+          variant="contained"
+          color="secondary"
+        >
           {loading ? <FacebookCircularProgress /> : "Create"}
         </Button>
       </DialogActions>

@@ -1,5 +1,5 @@
-import React from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -14,8 +14,10 @@ import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 
 import ErrorToast from "../components/ErrorToast.jsx";
 import ScrollableTabsButtonAuto from "../components/ScrollableTabsButtonAuto.jsx";
+import CreateTaskModal1 from "../components/CreateTaskModal1.jsx";
 import { getErrorMessage } from "../utils/getError";
-import { ME_, CREATE_TASK } from "../Queries.js";
+import { ME_ } from "../Queries.js";
+import AddMembersModal from "../components/AddMembersModal.jsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,8 +72,15 @@ const DashPage1 = ({
   getDashboardLoading,
   getDashboardError,
   getDashboardData,
+  handleDelete,
+  deleteDashboardLoading,
+  getDashboardsLoading,
 }) => {
   const classes = useStyles();
+
+  const [openCreateTask, setOpenCreateTask] = useState(false);
+  const [editCreateTask, setEditCreateTask] = useState(false);
+  const [addMembers, setAddMembers] = useState(false);
 
   const { data: userData } = useQuery(ME_, {
     fetchPolicy: "cache-only",
@@ -81,92 +90,133 @@ const DashPage1 = ({
   const { id, name, description, creator_id, members } = getDashboardData;
   console.log("hhh", getDashboardData, members);
 
-  if (getDashboardLoading) {
+  const openCreateTaskModal = () => {
+    setOpenCreateTask(true);
+  };
+
+  const closeCreateTaskModal = () => {
+    setOpenCreateTask(false);
+  };
+
+  const openEditTaskModal = () => {
+    setEditCreateTask(true);
+  };
+
+  const closeEditTaskModal = () => {
+    setEditCreateTask(false);
+  };
+
+  const openAddMembersModal = () => {
+    setAddMembers(true);
+  };
+
+  const closeAddMemberskModal = () => {
+    setAddMembers(false);
+  };
+
+  if (getDashboardLoading || deleteDashboardLoading || getDashboardsLoading) {
     return (
       <div className={classes.spinner}>
         <CircularProgress className={classes.circularProgress} />
       </div>
     );
   }
+
   if (getDashboardError) {
-    <ErrorToast error={getErrorMessage(getDashboardError)} />;
+    return <ErrorToast error={getErrorMessage(getDashboardError)} />;
   }
   return (
-    <div className={classes.root}>
-      {!getDashboardData ? (
-        "Create a dashboard"
-      ) : (
-        <Grid container>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <Typography variant="h4">{name}</Typography>
-            </Paper>
+    <>
+      <div className={classes.root}>
+        {!getDashboardData ? (
+          "Create a dashboard"
+        ) : (
+          <Grid container>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Typography variant="h4">{name}</Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Typography variant="h6">{description}</Typography>
+              </Paper>
+            </Grid>
+            {parseInt(loggedInUserId) === creator_id && (
+              <>
+                <Grid item xs={12} sm={6}>
+                  <Paper className={classes.paperCreateTask}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="medium"
+                      className={classes.button}
+                      onClick={openCreateTaskModal}
+                      startIcon={<NoteAddIcon />}
+                    >
+                      Create Task
+                    </Button>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Paper className={classes.paperEditAndDeleteTask}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="medium"
+                      className={classes.button}
+                      onClick={openAddMembersModal}
+                      startIcon={<SupervisedUserCircleIcon />}
+                    >
+                      Add Members
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="medium"
+                      className={classes.button}
+                      //   onClick={openCreateTaskModal}
+                      startIcon={<EditIcon />}
+                    >
+                      Edit Dashboard
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="medium"
+                      className={classes.button}
+                      onClick={handleDelete}
+                      startIcon={<DeleteForeverIcon />}
+                    >
+                      Delete Dashboard
+                    </Button>
+                  </Paper>
+                </Grid>
+              </>
+            )}
+            <Grid item xs={12}>
+              <Paper className={classes.tabContainer}>
+                <ScrollableTabsButtonAuto members={members} />
+              </Paper>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <Typography variant="h6">{description}</Typography>
-            </Paper>
-          </Grid>
-          {loggedInUserId == creator_id && (
-            <>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes.paperCreateTask}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="medium"
-                    className={classes.button}
-                    //   onClick={openCreateTaskModal}
-                    startIcon={<NoteAddIcon />}
-                  >
-                    Create Task
-                  </Button>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes.paperEditAndDeleteTask}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="medium"
-                    className={classes.button}
-                    //   onClick={openCreateTaskModal}
-                    startIcon={<SupervisedUserCircleIcon />}
-                  >
-                    Add Members
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="medium"
-                    className={classes.button}
-                    //   onClick={openCreateTaskModal}
-                    startIcon={<EditIcon />}
-                  >
-                    Edit Dashboard
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="medium"
-                    className={classes.button}
-                    //   onClick={openCreateTaskModal}
-                    startIcon={<DeleteForeverIcon />}
-                  >
-                    Delete Dashboard
-                  </Button>
-                </Paper>
-              </Grid>
-            </>
-          )}
-          <Grid item xs={12}>
-            <Paper className={classes.tabContainer}>
-              <ScrollableTabsButtonAuto members={members} />
-            </Paper>
-          </Grid>
-        </Grid>
-      )}
-    </div>
+        )}
+      </div>
+      <CreateTaskModal1
+        getDash={getDash}
+        loggedInUserId={loggedInUserId}
+        members={members}
+        open={openCreateTask}
+        close={closeCreateTaskModal}
+        dashboard={id}
+      />
+      <AddMembersModal
+        getDash={getDash}
+        open={addMembers}
+        close={closeAddMemberskModal}
+        dashboard={id}
+      />
+    </>
   );
 };
 

@@ -76,7 +76,7 @@ export default function ScrollableTabsButtonAuto({ members }) {
         <Tabs
           value={value}
           onChange={handleChange}
-          textColor="#0066eb"
+          // textColor="#0066eb"
           indicatorColor="secondary"
           variant="scrollable"
           scrollButtons="auto"
@@ -92,13 +92,13 @@ export default function ScrollableTabsButtonAuto({ members }) {
           ))}
         </Tabs>
       </AppBar>
-      {members?.map(({ id, firstname }, index) => (
+      {members?.map(({ id, firstname, tasks_assigned }, index) => (
         <TabPanel
           key={`tabPanel${id}-${firstname}`}
           value={value}
           index={index}
         >
-          <TaskBoard />
+          <TaskBoard tasks={tasks_assigned} />
         </TabPanel>
       ))}
     </div>
