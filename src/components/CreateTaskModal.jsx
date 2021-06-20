@@ -76,6 +76,7 @@ const CreateTaskModal = ({
           <select onChange={(e) => setAssignTo(e.target.value)}>
             {members.map(({ id, firstname }) => (
               <option key={`dropdown${id}${firstname}`} value={id}>
+                {/*eslint-disable-next-line */}
                 {loggedInUserId == id ? "Me" : firstname}
               </option>
             ))}

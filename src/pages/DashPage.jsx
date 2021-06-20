@@ -41,8 +41,10 @@ const DashPage = ({ getDash, loading, error, data }) => {
   };
 
   const showCreateTask = (() => {
+    // eslint-disable-next-line
     if (loggedInUserId == creator_id || loggedInUserId !== selectedMember)
       return false;
+    // eslint-disable-next-line
     else if (loggedInUserId == selectedMember) return true;
   })();
 
@@ -58,12 +60,12 @@ const DashPage = ({ getDash, loading, error, data }) => {
     <div style={{ width: "85vw" }}>
       <h1 style={{ textAlign: "center" }}>{name}</h1>
       <h4 style={{ textAlign: "center" }}>{description}</h4>
+      {/*eslint-disable-next-line */}
       {loggedInUserId == creator_id && (
         <div>
           <button onClick={openCreateTaskModal}>Create Task</button>
         </div>
       )}
-
       <MemberTab
         selectedMember={selectedMember}
         setSelectedMember={setSelectedMember}

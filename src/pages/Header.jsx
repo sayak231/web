@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   appbar: {
     backgroundImage: theme.palette.mainBackgroundColor,
     minHeight: "7.5vh",
-    zIndex: 5,
+    zIndex: 999,
   },
   menuButton: {
     marginRight: theme.spacing(2),

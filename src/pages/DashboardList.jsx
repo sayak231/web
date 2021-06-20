@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     width: "15vw",
     backgroundImage: "linear-gradient(to bottom, #0066eb 21%, #7752ff 89%)",
     position: "relative",
+    zIndex: 1,
   },
   toolbar: {
     textAlign: "center",
@@ -43,8 +44,8 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem: {
     color: "#FFFFFF",
-    paddingTop: "2vh",
-    paddingBottom: "2vh",
+    paddingTop: "0.5vh",
+    paddingBottom: "0.5vh",
   },
   Chip: {
     backgroundColor: "#417500",
@@ -53,10 +54,6 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
   },
-  margin: {
-    margin: theme.spacing(1),
-    zIndex: 99999,
-  },
 }));
 
 const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
@@ -64,7 +61,6 @@ const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
 
   const [dashboardName, setDashboardName] = useState("");
   const [dashboardDescription, setDashboardDescription] = useState("");
-
   const [showModal, setShowModal] = useState(false);
 
   const {
@@ -76,10 +72,22 @@ const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
     fetchPolicy: "network-only",
     notifyOnNetworkStatusChange: true,
   });
+
+  useEffect(() => {
+    if (getDashboardsData?.getDashboards.length > 0) {
+      setSelectedIndex(getDashboardsData?.getDashboards[0].id);
+      getDash();
+    } else if (getDashboardsData?.getDashboards.length === 0) {
+      setSelectedIndex(-1);
+      getDash();
+    }
+  }, [getDashboardsData]);
+
   const [
     createDashboard,
     { loading: createDashboardLoading, error: createDashboardError },
   ] = useMutation(CREATE_DASHBOARD);
+
   const [
     deleteDashboard,
     {
@@ -89,20 +97,21 @@ const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
     },
   ] = useMutation(DELETE_DASHBOARD);
 
-  const handleDashboard = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setSelectedIndex(id);
-    console.log("handleDashboard");
-    getDash();
-  };
-
   const openModal = () => {
+    setDashboardName("");
+    setDashboardDescription("");
     setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  const handleDashboard = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedIndex(id);
+    getDash();
   };
 
   const handleCreate = async () => {
@@ -119,7 +128,6 @@ const DashboardList = ({ selectedIndex, setSelectedIndex, getDash }) => {
         if (!getDashboardsLoading) {
           closeModal();
           setSelectedIndex(response.data.createDashboard.id);
-          getDash();
         }
       }
     } catch (e) {
