@@ -96,7 +96,7 @@ const AddMembersModal = ({ open, close, dashboard, getDash }) => {
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle className={classes.dialog} id="form-dialog-title">
-        CREATE TASK
+        ADD MEMBER
       </DialogTitle>
       <DialogContent className={classes.dialog}>
         <DialogContentText className={classes.label}>
@@ -140,7 +140,7 @@ const AddMembersModal = ({ open, close, dashboard, getDash }) => {
           variant="contained"
           color="secondary"
         >
-          {addMemberLoading ? <FacebookCircularProgress /> : "Create"}
+          {addMemberLoading ? <FacebookCircularProgress /> : "ADD"}
         </Button>
       </DialogActions>
       {addMemberError && <ErrorToast error={getErrorMessage(addMemberError)} />}

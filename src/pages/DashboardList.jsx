@@ -15,6 +15,7 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import Container from "@material-ui/core/Container";
 
 import FacebookCircularProgress from "../components/FacebookCircularProgress.jsx";
 import CreateDashboardModal from "../components/CreateDashboardModal.jsx";
@@ -38,9 +39,22 @@ const useStyles = makeStyles((theme) => ({
     height: "10vh",
     paddingTop: "3vh",
     color: "#FFFFFF",
+    flexShrink: 0,
   },
   list: {
     padding: "5vh 0",
+    flexGrow: 1,
+    flexWrap: "nowrap",
+    overflow: "auto",
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "grey",
+      border: "4px solid transparent",
+      borderRadius: "8px",
+      backgroundClip: "padding-box",
+    },
+    "&::-webkit-scrollbar": {
+      width: "16px",
+    },
   },
   listItem: {
     color: "#FFFFFF",
@@ -53,6 +67,12 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(1),
+    flexShrink: 0,
+  },
+  drawerContent: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
   },
 }));
 
@@ -146,81 +166,87 @@ const DashboardList = ({
         }}
         anchor="left"
       >
-        <div className={classes.toolbar}>
-          <Typography variant="h5">Dashboards</Typography>
-        </div>
-        {!getDashboardsLoading ? (
-          <>
-            <Divider />
-            <List className={classes.list}>
-              {getDashboardsData?.getDashboards.map(
-                ({ id, name, isCreated }) => (
-                  <ListItem
-                    className={classes.listItem}
-                    selected={selectedIndex === id}
-                    button
-                    key={`dashboard${id}`}
-                  >
-                    <ListItemText
-                      onClick={(e) => handleDashboard(e, id)}
-                      className={classes.listItemText}
-                      primary={name}
-                    />
-                    <ListItemIcon>
-                      {isCreated && (
-                        <Chip
-                          className={classes.Chip}
-                          size="small"
-                          label="Created"
-                          icon={<DoneIcon className={classes.Chip} />}
-                        />
-                      )}
-                    </ListItemIcon>
-                    {isCreated && selectedIndex === id && (
-                      <IconButton
-                        onClick={handleDelete}
-                        aria-label="delete"
-                        className={classes.button}
-                      >
-                        {deleteDashboardLoading ? (
-                          <FacebookCircularProgress />
-                        ) : (
-                          <DeleteIcon fontSize="small" />
-                        )}
-                      </IconButton>
-                    )}
-                  </ListItem>
-                )
-              )}
-            </List>
-            {deleteDashboardError && (
-              <ErrorToast error={getErrorMessage(deleteDashboardError)} />
-            )}
-            {deleteDashboardData?.deleteDashboard === 0 && (
-              <ErrorToast error="Could not delete dashboard !" />
-            )}
-            {getDashboardsData?.getDashboards.length === 0 ? (
-              <div>No dashboards present yet</div>
-            ) : (
-              <Divider />
-            )}
-          </>
-        ) : (
-          <FacebookCircularProgress />
-        )}
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          className={classes.button}
-          startIcon={<AddCircleOutlineIcon />}
-          onClick={openModal}
+        <Container
+          disableGutters
+          className={classes.drawerContent}
+          component="div"
         >
-          Create One !
-        </Button>
-        {getDashboardsError && (
-          <ErrorToast error={getErrorMessage(getDashboardsError)} />
-        )}
+          <Container component="div" className={classes.toolbar}>
+            <Typography variant="h5">Dashboards</Typography>
+          </Container>
+          {!getDashboardsLoading ? (
+            <>
+              <Divider />
+              <List className={classes.list}>
+                {getDashboardsData?.getDashboards.map(
+                  ({ id, name, isCreated }) => (
+                    <ListItem
+                      className={classes.listItem}
+                      selected={selectedIndex === id}
+                      button
+                      key={`dashboard${id}`}
+                    >
+                      <ListItemText
+                        onClick={(e) => handleDashboard(e, id)}
+                        className={classes.listItemText}
+                        primary={name}
+                      />
+                      <ListItemIcon>
+                        {isCreated && (
+                          <Chip
+                            className={classes.Chip}
+                            size="small"
+                            label="Created"
+                            icon={<DoneIcon className={classes.Chip} />}
+                          />
+                        )}
+                      </ListItemIcon>
+                      {isCreated && selectedIndex === id && (
+                        <IconButton
+                          onClick={handleDelete}
+                          aria-label="delete"
+                          className={classes.button}
+                        >
+                          {deleteDashboardLoading ? (
+                            <FacebookCircularProgress />
+                          ) : (
+                            <DeleteIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      )}
+                    </ListItem>
+                  )
+                )}
+              </List>
+              {deleteDashboardError && (
+                <ErrorToast error={getErrorMessage(deleteDashboardError)} />
+              )}
+              {deleteDashboardData?.deleteDashboard === 0 && (
+                <ErrorToast error="Could not delete dashboard !" />
+              )}
+              {getDashboardsData?.getDashboards.length === 0 ? (
+                <div>No dashboards present yet</div>
+              ) : (
+                <Divider />
+              )}
+            </>
+          ) : (
+            <FacebookCircularProgress />
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            className={classes.button}
+            startIcon={<AddCircleOutlineIcon />}
+            onClick={openModal}
+          >
+            Create One !
+          </Button>
+          {getDashboardsError && (
+            <ErrorToast error={getErrorMessage(getDashboardsError)} />
+          )}
+        </Container>
       </Drawer>
       <CreateDashboardModal
         open={showModal}

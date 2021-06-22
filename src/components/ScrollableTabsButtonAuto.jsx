@@ -6,6 +6,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import NoteAddIcon from "@material-ui/icons/NoteAdd";
 
 import TaskBoard from "./TaskBoard.jsx";
 
@@ -23,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     backgroundColor: "transparent",
+  },
+  button: {
+    margin: theme.spacing(1),
+    backgroundImage: "linear-gradient(to bottom, #0066eb 21%, #7752ff 89%)",
   },
 }));
 
@@ -61,7 +67,14 @@ function a11yProps(index) {
   };
 }
 
-export default function ScrollableTabsButtonAuto({ members }) {
+export default function ScrollableTabsButtonAuto({
+  creator,
+  members,
+  loggedInUserId,
+  open,
+  dashboard,
+  getDash,
+}) {
   const classes = useStyles();
 
   const [value, setValue] = useState(0);
@@ -69,14 +82,12 @@ export default function ScrollableTabsButtonAuto({ members }) {
   const handleChange = (_, newValue) => {
     setValue(newValue);
   };
-
   return (
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="static" color="default">
         <Tabs
           value={value}
           onChange={handleChange}
-          // textColor="#0066eb"
           indicatorColor="secondary"
           variant="scrollable"
           scrollButtons="auto"
@@ -86,7 +97,7 @@ export default function ScrollableTabsButtonAuto({ members }) {
             <Tab
               className={classes.tab}
               key={`member${id}-${firstname}`}
-              label={firstname}
+              label={loggedInUserId === id ? "ME" : firstname}
               {...a11yProps(index)}
             />
           ))}
@@ -98,7 +109,26 @@ export default function ScrollableTabsButtonAuto({ members }) {
           value={value}
           index={index}
         >
-          <TaskBoard tasks={tasks_assigned} />
+          {loggedInUserId === id && parseInt(loggedInUserId) !== creator && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="medium"
+              className={classes.button}
+              onClick={open}
+              startIcon={<NoteAddIcon />}
+            >
+              Create Task
+            </Button>
+          )}
+
+          <TaskBoard
+            loggedInUserId={loggedInUserId}
+            creator={creator}
+            tasks={tasks_assigned}
+            dashboard={dashboard}
+            getDash={getDash}
+          />
         </TabPanel>
       ))}
     </div>

@@ -18,6 +18,15 @@ const useStyles = makeStyles((theme) => ({
   taskPaper: {
     overflowY: "auto",
     height: "45vh",
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "grey",
+      border: "4px solid transparent",
+      borderRadius: "8px",
+      backgroundClip: "padding-box",
+    },
+    "&::-webkit-scrollbar": {
+      width: "16px",
+    },
   },
   statusHeader: {
     fontWeight: 500,
@@ -32,7 +41,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TaskContainer = ({ status, tasks }) => {
+const TaskContainer = ({
+  status,
+  tasks,
+  loggedInUserId,
+  creator,
+  dashboard,
+  getDash,
+}) => {
   const classes = useStyles();
   return (
     <Paper className={classes.paper} elevation={3}>
@@ -43,7 +59,14 @@ const TaskContainer = ({ status, tasks }) => {
       {tasks.length > 0 ? (
         <Paper className={classes.taskPaper}>
           {tasks?.map((task) => (
-            <TaskCard key={`task${task.id}`} task={task} />
+            <TaskCard
+              loggedInUserId={loggedInUserId}
+              creator={creator}
+              key={`task${task.id}`}
+              task={task}
+              dashboard={dashboard}
+              getDash={getDash}
+            />
           ))}
         </Paper>
       ) : (

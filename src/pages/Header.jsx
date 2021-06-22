@@ -79,7 +79,7 @@ const Header = ({ setIsLoggedIn }) => {
       setIsLoggedIn(false);
       setAnchorEl(null);
     } catch (e) {
-      console.log("logout err");
+      console.error("logout err");
     }
   };
 

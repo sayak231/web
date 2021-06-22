@@ -81,6 +81,7 @@ const DashPage1 = ({
   const [openCreateTask, setOpenCreateTask] = useState(false);
   const [editCreateTask, setEditCreateTask] = useState(false);
   const [addMembers, setAddMembers] = useState(false);
+  const [localCreateTask, setLocalCreateTask] = useState(false);
 
   const { data: userData } = useQuery(ME_, {
     fetchPolicy: "cache-only",
@@ -91,10 +92,18 @@ const DashPage1 = ({
   console.log("hhh", getDashboardData, members);
 
   const openCreateTaskModal = () => {
+    if (parseInt(loggedInUserId) !== creator_id) {
+      setLocalCreateTask(true);
+      setOpenCreateTask(true);
+    }
     setOpenCreateTask(true);
   };
 
   const closeCreateTaskModal = () => {
+    if (parseInt(loggedInUserId) !== creator_id) {
+      setLocalCreateTask(false);
+      setOpenCreateTask(false);
+    }
     setOpenCreateTask(false);
   };
 
@@ -121,7 +130,6 @@ const DashPage1 = ({
       </div>
     );
   }
-
   if (getDashboardError) {
     return <ErrorToast error={getErrorMessage(getDashboardError)} />;
   }
@@ -196,7 +204,14 @@ const DashPage1 = ({
             )}
             <Grid item xs={12}>
               <Paper className={classes.tabContainer}>
-                <ScrollableTabsButtonAuto members={members} />
+                <ScrollableTabsButtonAuto
+                  creator={creator_id}
+                  loggedInUserId={loggedInUserId}
+                  members={members}
+                  open={openCreateTaskModal}
+                  dashboard={id}
+                  getDash={getDash}
+                />
               </Paper>
             </Grid>
           </Grid>
@@ -209,6 +224,7 @@ const DashPage1 = ({
         open={openCreateTask}
         close={closeCreateTaskModal}
         dashboard={id}
+        localCreateTask={localCreateTask}
       />
       <AddMembersModal
         getDash={getDash}

@@ -16,7 +16,7 @@ const Register = ({ history }) => {
         history.push("/login");
       }
     } catch (e) {
-      console.log("error", e);
+      console.error("error", e);
     }
   };
 

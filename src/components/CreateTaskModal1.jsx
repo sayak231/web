@@ -39,6 +39,7 @@ const CreateTaskModal1 = ({
   open,
   close,
   dashboard,
+  localCreateTask,
 }) => {
   const classes = useStyles();
 
@@ -51,10 +52,11 @@ const CreateTaskModal1 = ({
     if (
       taskName.length < 3 ||
       taskDescription.length < 5 ||
-      assignTo.length === 0
+      (!localCreateTask && assignTo.length === 0)
     ) {
       setDisabled(true);
     } else setDisabled(false);
+    // eslint-disable-next-line
   }, [taskName, taskDescription, assignTo]);
 
   const [createTask, { loading, error }] = useMutation(CREATE_TASK);
@@ -77,7 +79,9 @@ const CreateTaskModal1 = ({
         variables: {
           name: taskName,
           description: taskDescription,
-          assignTo: parseInt(assignTo),
+          assignTo: localCreateTask
+            ? parseInt(loggedInUserId)
+            : parseInt(assignTo),
           dashboard: parseInt(dashboard),
         },
       });
@@ -135,34 +139,35 @@ const CreateTaskModal1 = ({
             className: classes.label,
           }}
         />
-
-        <FormControl className={classes.formControl}>
-          <InputLabel
-            className={classes.label}
-            id="demo-simple-select-helper-label"
-          >
-            Assign To
-          </InputLabel>
-          <Select
-            classes={{
-              root: classes.label,
-              icon: classes.label,
-            }}
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            value={assignTo}
-            onChange={handleAssign}
-          >
-            {members?.map(({ id, firstname }) => (
-              <MenuItem key={`dropdown${id}${firstname}`} value={id}>
-                {loggedInUserId === id ? "Me" : firstname}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText className={classes.label}>
-            Who should be doing this ?
-          </FormHelperText>
-        </FormControl>
+        {!localCreateTask && (
+          <FormControl className={classes.formControl}>
+            <InputLabel
+              className={classes.label}
+              id="demo-simple-select-helper-label"
+            >
+              Assign To
+            </InputLabel>
+            <Select
+              classes={{
+                root: classes.label,
+                icon: classes.label,
+              }}
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              value={assignTo}
+              onChange={handleAssign}
+            >
+              {members?.map(({ id, firstname }) => (
+                <MenuItem key={`dropdown${id}${firstname}`} value={id}>
+                  {loggedInUserId === id ? "Me" : firstname}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText className={classes.label}>
+              Who should be doing this ?
+            </FormHelperText>
+          </FormControl>
+        )}
       </DialogContent>
       <DialogActions className={classes.dialog}>
         <Button onClick={close} variant="contained" color="secondary">

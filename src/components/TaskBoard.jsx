@@ -11,21 +11,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TaskBoard = ({ tasks }) => {
+const TaskBoard = ({ tasks, loggedInUserId, creator, dashboard, getDash }) => {
   const classes = useStyles();
-  console.log("tasks", tasks);
   return (
     <Box className={classes.box} component="div" m={1}>
       <TaskContainer
+        loggedInUserId={loggedInUserId}
+        creator={creator}
         tasks={tasks.filter((task) => task.status === 1)}
+        dashboard={dashboard}
+        getDash={getDash}
         status={"To Do"}
       />
       <TaskContainer
+        loggedInUserId={loggedInUserId}
+        creator={creator}
         tasks={tasks.filter((task) => task.status === 2)}
+        dashboard={dashboard}
+        getDash={getDash}
         status={"In progress"}
       />
       <TaskContainer
+        loggedInUserId={loggedInUserId}
+        creator={creator}
         tasks={tasks.filter((task) => task.status === 3)}
+        dashboard={dashboard}
+        getDash={getDash}
         status={"Done"}
       />
     </Box>

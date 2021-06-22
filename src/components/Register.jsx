@@ -245,7 +245,7 @@ const Register = ({ loading, handleSubmit, graphQlError }) => {
                   variant="contained"
                   color="primary"
                   className={classes.submit}
-                  disabled={isSubmitting || loading}
+                  disabled={loading}
                 >
                   {loading ? (
                     <CircularProgress className={classes.circularProgress} />
