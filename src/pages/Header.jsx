@@ -22,7 +22,7 @@ import logo from "../assets/images/task.png";
 const useStyles = makeStyles((theme) => ({
   appbar: {
     backgroundImage: theme.palette.mainBackgroundColor,
-    minHeight: "7.5vh",
+    height: "8vh",
     zIndex: 999,
   },
   menuButton: {
@@ -85,7 +85,7 @@ const Header = ({ setIsLoggedIn }) => {
 
   return (
     <AppBar className={classes.appbar} position="sticky">
-      <Toolbar>
+      <Toolbar className={classes.tool}>
         <IconButton
           component={Link}
           to="/"

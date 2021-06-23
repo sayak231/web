@@ -12,7 +12,7 @@ import { GET_DASHBOARDS, GET_DASHBOARD, DELETE_DASHBOARD } from "../Queries";
 const useStyles = makeStyles(() => ({
   Container: {
     backgroundColor: "#dbe9f4",
-    height: "92.5vh",
+    height: "92vh",
     display: "flex",
   },
 }));

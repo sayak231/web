@@ -3,7 +3,6 @@ import { useQuery } from "@apollo/client";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
@@ -11,6 +10,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+import Box from "@material-ui/core/Box";
 
 import ErrorToast from "../components/ErrorToast.jsx";
 import ScrollableTabsButtonAuto from "../components/ScrollableTabsButtonAuto.jsx";
@@ -18,14 +18,19 @@ import CreateTaskModal1 from "../components/CreateTaskModal1.jsx";
 import { getErrorMessage } from "../utils/getError";
 import { ME_ } from "../Queries.js";
 import AddMembersModal from "../components/AddMembersModal.jsx";
+import Copyright from "../components/Copyright.jsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     width: "70vw",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
   },
   paper: {
-    padding: theme.spacing(2),
+    height: "7%",
+    paddingTop: "10px",
     textAlign: "center",
     boxShadow: "none",
     textTransform: "uppercase",
@@ -33,18 +38,24 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "transparent",
   },
   paperCreateTask: {
-    padding: theme.spacing(2),
     textAlign: "left",
     boxShadow: "none",
     color: theme.palette.text.secondary,
     backgroundColor: "transparent",
   },
   paperEditAndDeleteTask: {
-    padding: theme.spacing(2),
     textAlign: "right",
     boxShadow: "none",
     color: theme.palette.text.secondary,
     backgroundColor: "transparent",
+    marginLeft: "auto",
+  },
+  buttonContainer: {
+    width: "100%",
+    height: "10%",
+    display: "inline-flex",
+    backgroundColor: "transparent",
+    padding: "0 2vh",
   },
   button: {
     margin: theme.spacing(1),
@@ -139,83 +150,80 @@ const DashPage1 = ({
         {!getDashboardData ? (
           "Create a dashboard"
         ) : (
-          <Grid container>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Typography variant="h4">{name}</Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Typography variant="h6">{description}</Typography>
-              </Paper>
-            </Grid>
+          <>
+            <Paper className={classes.paper}>
+              <Typography variant="h5">{name}</Typography>
+            </Paper>
+            <Paper className={classes.paper}>
+              <Typography variant="subtitle1">{description}</Typography>
+            </Paper>
             {parseInt(loggedInUserId) === creator_id && (
-              <>
-                <Grid item xs={12} sm={6}>
-                  <Paper className={classes.paperCreateTask}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="medium"
-                      className={classes.button}
-                      onClick={openCreateTaskModal}
-                      startIcon={<NoteAddIcon />}
-                    >
-                      Create Task
-                    </Button>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Paper className={classes.paperEditAndDeleteTask}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="medium"
-                      className={classes.button}
-                      onClick={openAddMembersModal}
-                      startIcon={<SupervisedUserCircleIcon />}
-                    >
-                      Add Members
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="medium"
-                      className={classes.button}
-                      //   onClick={openCreateTaskModal}
-                      startIcon={<EditIcon />}
-                    >
-                      Edit Dashboard
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="medium"
-                      className={classes.button}
-                      onClick={handleDelete}
-                      startIcon={<DeleteForeverIcon />}
-                    >
-                      Delete Dashboard
-                    </Button>
-                  </Paper>
-                </Grid>
-              </>
-            )}
-            <Grid item xs={12}>
-              <Paper className={classes.tabContainer}>
-                <ScrollableTabsButtonAuto
-                  creator={creator_id}
-                  loggedInUserId={loggedInUserId}
-                  members={members}
-                  open={openCreateTaskModal}
-                  dashboard={id}
-                  getDash={getDash}
-                />
+              <Paper
+                component="div"
+                className={classes.buttonContainer}
+                elevation="0"
+              >
+                <Paper className={classes.paperCreateTask}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    className={classes.button}
+                    onClick={openCreateTaskModal}
+                    startIcon={<NoteAddIcon />}
+                  >
+                    Create Task
+                  </Button>
+                </Paper>
+                <Paper className={classes.paperEditAndDeleteTask}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    className={classes.button}
+                    onClick={openAddMembersModal}
+                    startIcon={<SupervisedUserCircleIcon />}
+                  >
+                    Add Members
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    className={classes.button}
+                    //   onClick={openCreateTaskModal}
+                    startIcon={<EditIcon />}
+                  >
+                    Edit Dashboard
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    className={classes.button}
+                    onClick={handleDelete}
+                    startIcon={<DeleteForeverIcon />}
+                  >
+                    Delete Dashboard
+                  </Button>
+                </Paper>
               </Paper>
-            </Grid>
-          </Grid>
+            )}
+            <Paper className={classes.tabContainer}>
+              <ScrollableTabsButtonAuto
+                creator={creator_id}
+                loggedInUserId={loggedInUserId}
+                members={members}
+                open={openCreateTaskModal}
+                dashboard={id}
+                getDash={getDash}
+              />
+            </Paper>
+          </>
         )}
+        <Box mt={8}>
+          <Copyright />
+        </Box>
       </div>
       <CreateTaskModal1
         getDash={getDash}

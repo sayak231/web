@@ -1,5 +1,13 @@
 import { gql } from "@apollo/client";
 
+export const CHANGE_TASK_STATUS = gql`
+  mutation changeTaskStatus($id: Int!, $status: Int!, $dashboard: Int!) {
+    changeTaskStatus(id: $id, status: $status, dashboard: $dashboard) {
+      id
+    }
+  }
+`;
+
 export const DELETE_TASK = gql`
   mutation deleteTask($id: Int!, $dashboard: Int!) {
     deleteTask(id: $id, dashboard: $dashboard) {

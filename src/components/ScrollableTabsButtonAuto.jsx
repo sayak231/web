@@ -15,6 +15,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     width: "100%",
+    height: "100%",
+    flex: "1 1 auto",
   },
   tabPanel: {
     backgroundColor: "transparent",
@@ -121,7 +123,6 @@ export default function ScrollableTabsButtonAuto({
               Create Task
             </Button>
           )}
-
           <TaskBoard
             loggedInUserId={loggedInUserId}
             creator={creator}

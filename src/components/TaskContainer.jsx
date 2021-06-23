@@ -1,4 +1,5 @@
 import React from "react";
+import { Droppable } from "react-beautiful-dnd";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -7,15 +8,15 @@ import Divider from "@material-ui/core/Divider";
 
 import TaskCard from "./TaskCard.jsx";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   paper: {
-    margin: theme.spacing(5),
+    margin: "1vh 1.5vw",
     minHeight: "40vh",
     height: "50vh",
     width: "30vw",
     backgroundImage: "linear-gradient(315deg, #e7eff9 0%, #cfd6e6 74%)",
   },
-  taskPaper: {
+  taskPaper1: {
     overflowY: "auto",
     height: "45vh",
     "&::-webkit-scrollbar-thumb": {
@@ -27,6 +28,23 @@ const useStyles = makeStyles((theme) => ({
     "&::-webkit-scrollbar": {
       width: "16px",
     },
+    transition: "background-color 0.2s ease",
+    backgroundImage: "linear-gradient(315deg, #e7eff9 0%, #cfd6e6 74%)",
+  },
+  taskPaper2: {
+    overflowY: "auto",
+    height: "45vh",
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "grey",
+      border: "4px solid transparent",
+      borderRadius: "8px",
+      backgroundClip: "padding-box",
+    },
+    "&::-webkit-scrollbar": {
+      width: "16px",
+    },
+    transition: "background-color 0.2s ease",
+    backgroundColor: "yellow",
   },
   statusHeader: {
     fontWeight: 500,
@@ -48,6 +66,8 @@ const TaskContainer = ({
   creator,
   dashboard,
   getDash,
+  loading,
+  draggableId,
 }) => {
   const classes = useStyles();
   return (
@@ -56,22 +76,40 @@ const TaskContainer = ({
         {status}
       </Typography>
       <Divider />
-      {tasks.length > 0 ? (
-        <Paper className={classes.taskPaper}>
-          {tasks?.map((task) => (
-            <TaskCard
-              loggedInUserId={loggedInUserId}
-              creator={creator}
-              key={`task${task.id}`}
-              task={task}
-              dashboard={dashboard}
-              getDash={getDash}
-            />
-          ))}
-        </Paper>
-      ) : (
-        <Paper className={classes.taskPaper}>{`No Tasks ${status}`}</Paper>
-      )}
+      <Droppable droppableId={status}>
+        {
+          (provided, snapshot) => (
+            // tasks.length > 0 ? (
+            <Paper
+              className={
+                snapshot.isDraggingOver
+                  ? classes.taskPaper2
+                  : classes.taskPaper1
+              }
+              innerRef={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {tasks?.map((task, index) => (
+                <TaskCard
+                  loggedInUserId={loggedInUserId}
+                  creator={creator}
+                  key={`task${task.id}`}
+                  task={task}
+                  dashboard={dashboard}
+                  getDash={getDash}
+                  index={index}
+                  taskLoading={loading}
+                  draggableId={draggableId}
+                />
+              ))}
+              {provided.placeholder}
+            </Paper>
+          )
+          // ) : (
+          //   <Paper className={classes.taskPaper}>{`No Tasks ${status}`}</Paper>
+          // )
+        }
+      </Droppable>
     </Paper>
   );
 };

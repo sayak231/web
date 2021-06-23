@@ -1,4 +1,5 @@
 import React from "react";
+import { Draggable } from "react-beautiful-dnd";
 import { useMutation } from "@apollo/client";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,7 +19,14 @@ import { DELETE_TASK } from "../Queries.js";
 import { getErrorMessage } from "../utils/getError";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root1: {
+    maxWidth: 450,
+    boxShadow: "inset 0px 0px 20px -7px #888888",
+    margin: "2vh 2vh",
+    backgroundImage: "linear-gradient(to bottom, #0066eb 21%, #7752ff 89%)",
+    color: "#FFFFFF",
+  },
+  root2: {
     maxWidth: 450,
     boxShadow: "inset 0px 0px 20px -7px #888888",
     margin: "2vh 2vh",
@@ -33,7 +41,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TaskCard = ({ task, loggedInUserId, creator, dashboard, getDash }) => {
+const TaskCard = ({
+  task,
+  loggedInUserId,
+  creator,
+  dashboard,
+  getDash,
+  index,
+  taskLoading,
+  draggableId,
+}) => {
   const classes = useStyles();
 
   const { id, name, description, assigned_to } = task;
@@ -53,39 +70,52 @@ const TaskCard = ({ task, loggedInUserId, creator, dashboard, getDash }) => {
     }
   };
 
+  if (taskLoading && draggableId === id) {
+    return <FacebookCircularProgress />;
+  }
+
   return (
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            {name[0]}
-          </Avatar>
-        }
-        title={name}
-        subheader={`${assigned_to.firstname} ${assigned_to.lastname}`}
-      />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {description}
-        </Typography>
-      </CardContent>
-      {(parseInt(loggedInUserId) === creator ||
-        loggedInUserId === assigned_to.id) && (
-        <CardActions className={classes.icon} disableSpacing>
-          <IconButton aria-label="add to favorites">
-            <EditTwoToneIcon color="primary" />
-          </IconButton>
-          <IconButton onClick={handleDelete} aria-label="share">
-            {loading ? (
-              <FacebookCircularProgress />
-            ) : (
-              <DeleteForeverRoundedIcon color="error" />
-            )}
-          </IconButton>
-        </CardActions>
+    <Draggable draggableId={id} index={index}>
+      {(provided, snapshot) => (
+        <Card
+          className={snapshot.isDragging ? classes.root1 : classes.root2}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          innerRef={provided.innerRef}
+        >
+          <CardHeader
+            avatar={
+              <Avatar aria-label="recipe" className={classes.avatar}>
+                {name[0]}
+              </Avatar>
+            }
+            title={name}
+            subheader={`${assigned_to.firstname} ${assigned_to.lastname}`}
+          />
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {description}
+            </Typography>
+          </CardContent>
+          {(parseInt(loggedInUserId) === creator ||
+            loggedInUserId === assigned_to.id) && (
+            <CardActions className={classes.icon} disableSpacing>
+              <IconButton aria-label="add to favorites">
+                <EditTwoToneIcon color="primary" />
+              </IconButton>
+              <IconButton onClick={handleDelete} aria-label="share">
+                {loading ? (
+                  <FacebookCircularProgress />
+                ) : (
+                  <DeleteForeverRoundedIcon color="error" />
+                )}
+              </IconButton>
+            </CardActions>
+          )}
+          {error && <ErrorToast error={getErrorMessage(error)} />}
+        </Card>
       )}
-      {error && <ErrorToast error={getErrorMessage(error)} />}
-    </Card>
+    </Draggable>
   );
 };
 
