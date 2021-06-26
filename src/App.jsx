@@ -97,7 +97,7 @@ const App = () => {
           }
         },
         fetchAccessToken: () => {
-          return fetch("https://tasks-app-server.herokuapp.com/refresh_token", {
+          return fetch("https://diy-tasks-server.herokuapp.com/refresh_token", {
             method: "POST",
             credentials: "include",
           });
@@ -113,7 +113,7 @@ const App = () => {
       requestLink,
 
       new HttpLink({
-        uri: "https://tasks-app-server.herokuapp.com/graphql",
+        uri: "https://diy-tasks-server.herokuapp.com/graphql",
         credentials: "include",
       }),
     ]),
@@ -125,7 +125,7 @@ const App = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("https://tasks-app-server.herokuapp.com/refresh_token", {
+    fetch("https://diy-tasks-server.herokuapp.com/refresh_token", {
       method: "POST",
       credentials: "include",
     }).then(async (x) => {
