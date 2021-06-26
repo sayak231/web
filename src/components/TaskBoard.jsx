@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useMutation } from "@apollo/client";
 
@@ -31,10 +31,6 @@ const TaskBoard = ({ tasks, loggedInUserId, creator, dashboard, getDash }) => {
     "In progress": tasks.filter((task) => task.status === 2),
     Done: tasks.filter((task) => task.status === 3),
   });
-
-  useEffect(() => {
-    console.log("columns", columns);
-  }, [columns]);
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
@@ -93,7 +89,7 @@ const TaskBoard = ({ tasks, loggedInUserId, creator, dashboard, getDash }) => {
       const postStatus =
         finish === "In progress" ? 2 : finish === "To Do" ? 1 : 3;
 
-      const response = await changeTaskStatus({
+      await changeTaskStatus({
         variables: {
           id: parseInt(draggableId),
           status: postStatus,

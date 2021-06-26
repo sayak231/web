@@ -28,11 +28,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: theme.palette.mainBackgroundColor,
   },
   container: {
-    height: "92.5vh",
+    height: "85vh",
     width: "100vw",
   },
   paper: {
-    paddingTop: theme.spacing(8),
+    paddingTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

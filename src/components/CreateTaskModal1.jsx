@@ -107,7 +107,7 @@ const CreateTaskModal1 = ({
       <DialogContent className={classes.dialog}>
         <DialogContentText className={classes.label}>
           To create a Task, Please provide a Task name and its description.
-          Also, assign it to someone or yourself.
+          {!localCreateTask && "Also, assign it to someone or yourself."}
         </DialogContentText>
         <TextField
           autoFocus

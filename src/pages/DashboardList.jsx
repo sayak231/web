@@ -8,7 +8,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import Chip from "@material-ui/core/Chip";
 import DoneIcon from "@material-ui/icons/Done";
 import Typography from "@material-ui/core/Typography";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -48,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "nowrap",
     overflow: "auto",
     "&::-webkit-scrollbar-thumb": {
-      backgroundColor: "grey",
+      backgroundColor: "#dbe9f4",
       border: "4px solid transparent",
       borderRadius: "8px",
       backgroundClip: "padding-box",
@@ -63,8 +62,13 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "0.5vh",
   },
   Chip: {
+    height: "22px",
+    width: "22px",
     backgroundColor: "#417500",
     color: "#FFFFFF",
+    borderRadius: "10px",
+    padding: "3px",
+    fontSize: "large",
   },
   button: {
     margin: theme.spacing(1),
@@ -104,7 +108,7 @@ const DashboardList = ({
   }, [dashboardName, dashboardDescription]);
 
   useEffect(() => {
-    if (getDashboardsData?.getDashboards.length > 0) {
+    if (selectedIndex === -1 && getDashboardsData?.getDashboards.length > 0) {
       setSelectedIndex(getDashboardsData?.getDashboards[0].id);
       getDash();
     } else if (getDashboardsData?.getDashboards.length === 0) {
@@ -193,14 +197,7 @@ const DashboardList = ({
                         primary={name}
                       />
                       <ListItemIcon>
-                        {isCreated && (
-                          <Chip
-                            className={classes.Chip}
-                            size="small"
-                            label="Created"
-                            icon={<DoneIcon className={classes.Chip} />}
-                          />
-                        )}
+                        {isCreated && <DoneIcon className={classes.Chip} />}
                       </ListItemIcon>
                       {isCreated && selectedIndex === id && (
                         <IconButton

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useMutation } from "@apollo/client";
 
@@ -17,6 +17,7 @@ import FacebookCircularProgress from "./FacebookCircularProgress.jsx";
 import ErrorToast from "../components/ErrorToast.jsx";
 import { DELETE_TASK } from "../Queries.js";
 import { getErrorMessage } from "../utils/getError";
+import EditTaskModal from "./EditTaskModal.jsx";
 
 const useStyles = makeStyles((theme) => ({
   root1: {
@@ -53,7 +54,17 @@ const TaskCard = ({
 }) => {
   const classes = useStyles();
 
+  const [editTask, setEditTask] = useState(false);
+
   const { id, name, description, assigned_to } = task;
+
+  const openEditTaskModal = () => {
+    setEditTask(true);
+  };
+
+  const closeEditTaskModal = () => {
+    setEditTask(false);
+  };
 
   const [deleteTask, { loading, error }] = useMutation(DELETE_TASK, {
     variables: { id: parseInt(id), dashboard: parseInt(dashboard) },
@@ -70,52 +81,72 @@ const TaskCard = ({
     }
   };
 
-  if (taskLoading && draggableId === id) {
-    return <FacebookCircularProgress />;
-  }
-
   return (
-    <Draggable draggableId={id} index={index}>
-      {(provided, snapshot) => (
-        <Card
-          className={snapshot.isDragging ? classes.root1 : classes.root2}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          innerRef={provided.innerRef}
-        >
-          <CardHeader
-            avatar={
-              <Avatar aria-label="recipe" className={classes.avatar}>
-                {name[0]}
-              </Avatar>
-            }
-            title={name}
-            subheader={`${assigned_to.firstname} ${assigned_to.lastname}`}
-          />
-          <CardContent>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {description}
-            </Typography>
-          </CardContent>
-          {(parseInt(loggedInUserId) === creator ||
-            loggedInUserId === assigned_to.id) && (
-            <CardActions className={classes.icon} disableSpacing>
-              <IconButton aria-label="add to favorites">
-                <EditTwoToneIcon color="primary" />
-              </IconButton>
-              <IconButton onClick={handleDelete} aria-label="share">
-                {loading ? (
-                  <FacebookCircularProgress />
-                ) : (
-                  <DeleteForeverRoundedIcon color="error" />
+    <>
+      <Draggable draggableId={id} index={index}>
+        {(provided, snapshot) => (
+          <Card
+            className={snapshot.isDragging ? classes.root1 : classes.root2}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            innerRef={provided.innerRef}
+          >
+            <CardHeader
+              avatar={
+                <Avatar aria-label="recipe" className={classes.avatar}>
+                  {name[0]}
+                </Avatar>
+              }
+              title={name}
+              subheader={`${assigned_to.firstname} ${assigned_to.lastname}`}
+            />
+            {taskLoading && draggableId === id ? (
+              <FacebookCircularProgress />
+            ) : (
+              <>
+                <CardContent>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    {description}
+                  </Typography>
+                </CardContent>
+                {(parseInt(loggedInUserId) === creator ||
+                  loggedInUserId === assigned_to.id) && (
+                  <CardActions className={classes.icon} disableSpacing>
+                    <IconButton
+                      onClick={openEditTaskModal}
+                      aria-label="add to favorites"
+                    >
+                      <EditTwoToneIcon color="primary" />
+                    </IconButton>
+                    <IconButton onClick={handleDelete} aria-label="share">
+                      {loading ? (
+                        <FacebookCircularProgress />
+                      ) : (
+                        <DeleteForeverRoundedIcon color="error" />
+                      )}
+                    </IconButton>
+                  </CardActions>
                 )}
-              </IconButton>
-            </CardActions>
-          )}
-          {error && <ErrorToast error={getErrorMessage(error)} />}
-        </Card>
-      )}
-    </Draggable>
+              </>
+            )}
+            {error && <ErrorToast error={getErrorMessage(error)} />}
+          </Card>
+        )}
+      </Draggable>
+      <EditTaskModal
+        taskId={id}
+        getDash={getDash}
+        open={editTask}
+        close={closeEditTaskModal}
+        dashboard={dashboard}
+        name={name}
+        description={description}
+      />
+    </>
   );
 };
 

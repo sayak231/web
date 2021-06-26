@@ -16,9 +16,9 @@ import ErrorToast from "../components/ErrorToast.jsx";
 import ScrollableTabsButtonAuto from "../components/ScrollableTabsButtonAuto.jsx";
 import CreateTaskModal1 from "../components/CreateTaskModal1.jsx";
 import { getErrorMessage } from "../utils/getError";
-import { ME_ } from "../Queries.js";
+import { ME_, GET_ALL_USERS } from "../Queries.js";
 import AddMembersModal from "../components/AddMembersModal.jsx";
-import Copyright from "../components/Copyright.jsx";
+import EditDashboardModal from "../components/EditDashboardModal.jsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,17 +90,24 @@ const DashPage1 = ({
   const classes = useStyles();
 
   const [openCreateTask, setOpenCreateTask] = useState(false);
-  const [editCreateTask, setEditCreateTask] = useState(false);
+  const [editDashboard, setEditDashboard] = useState(false);
   const [addMembers, setAddMembers] = useState(false);
   const [localCreateTask, setLocalCreateTask] = useState(false);
 
   const { data: userData } = useQuery(ME_, {
     fetchPolicy: "cache-only",
   });
+  const {
+    loading: getAllUsersLoading,
+    error: getAllUsersError,
+    data: allUsers,
+  } = useQuery(GET_ALL_USERS, {
+    fetchPolicy: "cache-first",
+  });
   const loggedInUserId = userData?.me.id;
 
-  const { id, name, description, creator_id, members } = getDashboardData;
-  console.log("hhh", getDashboardData, members);
+  const { id, name, description, creator_id, members, creator } =
+    getDashboardData;
 
   const openCreateTaskModal = () => {
     if (parseInt(loggedInUserId) !== creator_id) {
@@ -118,12 +125,12 @@ const DashPage1 = ({
     setOpenCreateTask(false);
   };
 
-  const openEditTaskModal = () => {
-    setEditCreateTask(true);
+  const openEditDashboardModal = () => {
+    setEditDashboard(true);
   };
 
-  const closeEditTaskModal = () => {
-    setEditCreateTask(false);
+  const closeEditDashboardModal = () => {
+    setEditDashboard(false);
   };
 
   const openAddMembersModal = () => {
@@ -161,7 +168,7 @@ const DashPage1 = ({
               <Paper
                 component="div"
                 className={classes.buttonContainer}
-                elevation="0"
+                elevation={0}
               >
                 <Paper className={classes.paperCreateTask}>
                   <Button
@@ -191,7 +198,7 @@ const DashPage1 = ({
                     color="primary"
                     size="medium"
                     className={classes.button}
-                    //   onClick={openCreateTaskModal}
+                    onClick={openEditDashboardModal}
                     startIcon={<EditIcon />}
                   >
                     Edit Dashboard
@@ -222,7 +229,10 @@ const DashPage1 = ({
           </>
         )}
         <Box mt={8}>
-          <Copyright />
+          <Typography variant="body2" color="textSecondary" align="center">
+            {getDashboardData &&
+              `© Created by ${creator.firstname} ${creator.lastname}`}
+          </Typography>
         </Box>
       </div>
       <CreateTaskModal1
@@ -239,6 +249,17 @@ const DashPage1 = ({
         open={addMembers}
         close={closeAddMemberskModal}
         dashboard={id}
+        getAllUsersLoading={getAllUsersLoading}
+        getAllUsersError={getAllUsersError}
+        allUsers={allUsers}
+      />
+      <EditDashboardModal
+        open={editDashboard}
+        close={closeEditDashboardModal}
+        id={id}
+        getDash={getDash}
+        name={name}
+        description={description}
       />
     </>
   );

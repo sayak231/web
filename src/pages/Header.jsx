@@ -22,7 +22,7 @@ import logo from "../assets/images/task.png";
 const useStyles = makeStyles((theme) => ({
   appbar: {
     backgroundImage: theme.palette.mainBackgroundColor,
-    height: "8vh",
+    height: "70px",
     zIndex: 999,
   },
   menuButton: {

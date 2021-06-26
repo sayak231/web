@@ -16,6 +16,12 @@ const useStyles = makeStyles(() => ({
     width: "30vw",
     backgroundImage: "linear-gradient(315deg, #e7eff9 0%, #cfd6e6 74%)",
   },
+  taskPaper: {
+    height: "100%",
+    textAlign: "center",
+    paddingTop: "auto",
+    backgroundColor: "transparent",
+  },
   taskPaper1: {
     overflowY: "auto",
     height: "45vh",
@@ -77,38 +83,35 @@ const TaskContainer = ({
       </Typography>
       <Divider />
       <Droppable droppableId={status}>
-        {
-          (provided, snapshot) => (
-            // tasks.length > 0 ? (
-            <Paper
-              className={
-                snapshot.isDraggingOver
-                  ? classes.taskPaper2
-                  : classes.taskPaper1
-              }
-              innerRef={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {tasks?.map((task, index) => (
-                <TaskCard
-                  loggedInUserId={loggedInUserId}
-                  creator={creator}
-                  key={`task${task.id}`}
-                  task={task}
-                  dashboard={dashboard}
-                  getDash={getDash}
-                  index={index}
-                  taskLoading={loading}
-                  draggableId={draggableId}
-                />
-              ))}
-              {provided.placeholder}
-            </Paper>
-          )
-          // ) : (
-          //   <Paper className={classes.taskPaper}>{`No Tasks ${status}`}</Paper>
-          // )
-        }
+        {(provided, snapshot) => (
+          <Paper
+            className={
+              snapshot.isDraggingOver ? classes.taskPaper2 : classes.taskPaper1
+            }
+            innerRef={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {tasks?.map((task, index) => (
+              <TaskCard
+                loggedInUserId={loggedInUserId}
+                creator={creator}
+                key={`task${task.id}`}
+                task={task}
+                dashboard={dashboard}
+                getDash={getDash}
+                index={index}
+                taskLoading={loading}
+                draggableId={draggableId}
+              />
+            ))}
+            {provided.placeholder}
+            {tasks.length === 0 && !snapshot.isDraggingOver && (
+              <Paper
+                className={classes.taskPaper}
+              >{`No Tasks ${status.toLowerCase()}`}</Paper>
+            )}
+          </Paper>
+        )}
       </Droppable>
     </Paper>
   );

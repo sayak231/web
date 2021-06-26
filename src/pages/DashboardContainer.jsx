@@ -62,6 +62,7 @@ const DashboardContainer = () => {
       });
       if (response && response.data) {
         if (response.data.deleteDashboard === parseInt(selectedIndex)) {
+          setSelectedIndex(getDashboardsData?.getDashboards[0].id);
           await refetch();
         }
       }

@@ -1,5 +1,31 @@
 import { gql } from "@apollo/client";
 
+export const EDIT_TASK = gql`
+  mutation editTask(
+    $id: Int!
+    $dashboard: Int!
+    $name: String!
+    $description: String!
+  ) {
+    editTask(
+      id: $id
+      dashboard: $dashboard
+      name: $name
+      description: $description
+    ) {
+      id
+    }
+  }
+`;
+
+export const EDIT_DASHBOARD = gql`
+  mutation editDashboard($id: Int!, $name: String!, $description: String!) {
+    editDashboard(id: $id, name: $name, description: $description) {
+      id
+    }
+  }
+`;
+
 export const CHANGE_TASK_STATUS = gql`
   mutation changeTaskStatus($id: Int!, $status: Int!, $dashboard: Int!) {
     changeTaskStatus(id: $id, status: $status, dashboard: $dashboard) {
@@ -80,6 +106,11 @@ export const GET_DASHBOARD = gql`
       name
       description
       creator_id
+      creator {
+        id
+        firstname
+        lastname
+      }
       members {
         id
         firstname

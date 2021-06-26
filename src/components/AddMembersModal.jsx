@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import React, { useState, useEffect } from "react";
+import { useMutation } from "@apollo/client";
 
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Dialog";
@@ -17,7 +17,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FacebookCircularProgress from "./FacebookCircularProgress.jsx";
 import ErrorToast from "./ErrorToast.jsx";
-import { GET_ALL_USERS, ADD_MEMBER } from "../Queries.js";
+import { ADD_MEMBER } from "../Queries.js";
 import { getErrorMessage } from "../utils/getError";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,23 +42,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddMembersModal = ({ open, close, dashboard, getDash }) => {
+const AddMembersModal = ({
+  open,
+  close,
+  dashboard,
+  getDash,
+  getAllUsersLoading,
+  getAllUsersError,
+  allUsers,
+}) => {
   const classes = useStyles();
 
   const [member, setMember] = useState("");
-
-  const {
-    loading: getAllUsersLoading,
-    error: getAllUsersError,
-    data: allUsers,
-  } = useQuery(GET_ALL_USERS, {
-    fetchPolicy: "cache-first",
-  });
+  const [disabled, setDisabled] = useState(false);
 
   const [addMember, { loading: addMemberLoading, error: addMemberError }] =
     useMutation(ADD_MEMBER, {
       variables: { id: parseInt(dashboard), memberId: parseInt(member) },
     });
+
+  useEffect(() => {
+    if (member.length !== 0) {
+      setDisabled(false);
+    } else setDisabled(true);
+  }, [member]);
+
+  useEffect(() => {
+    if (!open) {
+      setMember("");
+    }
+  }, [open]);
 
   const handleMember = (e) => {
     setMember(e.target.value);
@@ -89,12 +102,7 @@ const AddMembersModal = ({ open, close, dashboard, getDash }) => {
   }
 
   return (
-    <Modal
-      disableBackdropClick
-      open={open}
-      onClose={close}
-      aria-labelledby="form-dialog-title"
-    >
+    <Modal open={open} onClose={close} aria-labelledby="form-dialog-title">
       <DialogTitle className={classes.dialog} id="form-dialog-title">
         ADD MEMBER
       </DialogTitle>
@@ -135,7 +143,7 @@ const AddMembersModal = ({ open, close, dashboard, getDash }) => {
           Cancel
         </Button>
         <Button
-          // disabled={disabled}
+          disabled={disabled}
           onClick={handleAddMember}
           variant="contained"
           color="secondary"

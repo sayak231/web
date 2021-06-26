@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useMutation } from "@apollo/client";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -11,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import FacebookCircularProgress from "./FacebookCircularProgress.jsx";
 import ErrorToast from "./ErrorToast.jsx";
+import { EDIT_TASK } from "../Queries.js";
 
 const useStyles = makeStyles((theme) => ({
   dialog: {
@@ -20,26 +22,64 @@ const useStyles = makeStyles((theme) => ({
   label: {
     color: "#FFFFFF !important",
   },
+  formControl: {
+    width: "100%",
+  },
 }));
 
-const CreateDashboardModal = ({
+const EditTaskModal = ({
+  getDash,
   open,
   close,
-  create,
-  setDashboardName,
-  setDashboardDescription,
-  loading,
-  error,
-  disabled,
+  dashboard,
+  taskId,
+  name,
+  description,
 }) => {
   const classes = useStyles();
 
+  const [taskName, setTaskName] = useState(name);
+  const [taskDescription, setTaskDescription] = useState(description);
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    if (
+      taskName &&
+      taskDescription &&
+      (taskName.length < 3 || taskDescription.length < 5)
+    ) {
+      setDisabled(true);
+    } else setDisabled(false);
+    // eslint-disable-next-line
+  }, [taskName, taskDescription]);
+
+  const [editTask, { loading, error }] = useMutation(EDIT_TASK);
+
   const handleName = (e) => {
-    setDashboardName(e.target.value);
+    setTaskName(e.target.value);
   };
 
   const handleDescription = (e) => {
-    setDashboardDescription(e.target.value);
+    setTaskDescription(e.target.value);
+  };
+
+  const handleEdit = async () => {
+    try {
+      const response = await editTask({
+        variables: {
+          id: parseInt(taskId),
+          dashboard: parseInt(dashboard),
+          name: taskName,
+          description: taskDescription,
+        },
+      });
+      if (response && response.data) {
+        getDash({ variables: { id: parseInt(dashboard) } });
+        close();
+      }
+    } catch (e) {
+      console.error("error", e);
+    }
   };
 
   return (
@@ -50,21 +90,21 @@ const CreateDashboardModal = ({
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle className={classes.dialog} id="form-dialog-title">
-        CREATE DASHBOARD
+        EDIT TASK
       </DialogTitle>
       <DialogContent className={classes.dialog}>
         <DialogContentText className={classes.label}>
-          To edit a Dashboard, Please provide a Dashboard name and its
-          description.
+          To edit a Task, Please provide a new Task name and its description.
         </DialogContentText>
         <TextField
           autoFocus
           margin="dense"
           id="name"
-          label="Dashboard Name"
+          label="Task Name"
           type="name"
           fullWidth
           onChange={handleName}
+          value={taskName}
           InputLabelProps={{
             className: classes.label,
           }}
@@ -76,10 +116,11 @@ const CreateDashboardModal = ({
           className={classes.text}
           margin="dense"
           id="description"
-          label="Dashboard Description"
+          label="Task Description"
           type="description"
           fullWidth
           onChange={handleDescription}
+          value={taskDescription}
           InputLabelProps={{
             className: classes.label,
           }}
@@ -94,11 +135,11 @@ const CreateDashboardModal = ({
         </Button>
         <Button
           disabled={disabled}
-          onClick={create}
+          onClick={handleEdit}
           variant="contained"
           color="secondary"
         >
-          {loading ? <FacebookCircularProgress /> : "Create"}
+          {loading ? <FacebookCircularProgress /> : "Edit"}
         </Button>
       </DialogActions>
       {error && <ErrorToast error={error} />}
@@ -106,4 +147,4 @@ const CreateDashboardModal = ({
   );
 };
 
-export default CreateDashboardModal;
+export default EditTaskModal;
