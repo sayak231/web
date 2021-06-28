@@ -30,7 +30,7 @@ const DashPage = ({
   deleteDashboardLoading,
   getDashboardsLoading,
 }) => {
-  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1920px");
+  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1919px");
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,
