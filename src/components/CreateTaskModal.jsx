@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateTaskModal1 = ({
+const CreateTaskModal = ({
   getDash,
   loggedInUserId,
   members,
@@ -187,4 +187,4 @@ const CreateTaskModal1 = ({
   );
 };
 
-export default CreateTaskModal1;
+export default CreateTaskModal;

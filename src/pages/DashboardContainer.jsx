@@ -6,13 +6,13 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import DashboardList from "./DashboardList.jsx";
 // import DashPage from "./DashPage.jsx";
-import DashPage1 from "./DashPage1.jsx";
+import DashPage from "./DashPage.jsx";
 import { GET_DASHBOARDS, GET_DASHBOARD, DELETE_DASHBOARD } from "../Queries";
 
 const useStyles = makeStyles(() => ({
   Container: {
     backgroundColor: "#dbe9f4",
-    height: "92vh",
+    height: "92.5vh",
     display: "flex",
   },
 }));
@@ -91,7 +91,7 @@ const DashboardContainer = () => {
         deleteDashboardError={deleteDashboardError}
         deleteDashboardData={deleteDashboardData}
       />
-      <DashPage1
+      <DashPage
         getDash={getDash}
         getDashboardLoading={loading}
         getDashboardsLoading={getDashboardsLoading}

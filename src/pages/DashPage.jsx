@@ -11,74 +11,17 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import Box from "@material-ui/core/Box";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import ErrorToast from "../components/ErrorToast.jsx";
 import ScrollableTabsButtonAuto from "../components/ScrollableTabsButtonAuto.jsx";
-import CreateTaskModal1 from "../components/CreateTaskModal1.jsx";
+import CreateTaskModal from "../components/CreateTaskModal.jsx";
 import { getErrorMessage } from "../utils/getError";
 import { ME_, GET_ALL_USERS } from "../Queries.js";
 import AddMembersModal from "../components/AddMembersModal.jsx";
 import EditDashboardModal from "../components/EditDashboardModal.jsx";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "70vw",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
-  paper: {
-    height: "7%",
-    paddingTop: "10px",
-    textAlign: "center",
-    boxShadow: "none",
-    textTransform: "uppercase",
-    color: theme.palette.text.primary,
-    backgroundColor: "transparent",
-  },
-  paperCreateTask: {
-    textAlign: "left",
-    boxShadow: "none",
-    color: theme.palette.text.secondary,
-    backgroundColor: "transparent",
-  },
-  paperEditAndDeleteTask: {
-    textAlign: "right",
-    boxShadow: "none",
-    color: theme.palette.text.secondary,
-    backgroundColor: "transparent",
-    marginLeft: "auto",
-  },
-  buttonContainer: {
-    width: "100%",
-    height: "10%",
-    display: "inline-flex",
-    backgroundColor: "transparent",
-    padding: "0 2vh",
-  },
-  button: {
-    margin: theme.spacing(1),
-    backgroundImage: "linear-gradient(to bottom, #0066eb 21%, #7752ff 89%)",
-  },
-  tabContainer: {
-    height: "auto",
-    marginLeft: theme.spacing(3),
-    marginRight: theme.spacing(3),
-    backgroundColor: "transparent",
-  },
-  circularProgress: {
-    color: theme.palette.spinner.main,
-  },
-  spinner: {
-    display: "flex",
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-}));
-
-const DashPage1 = ({
+const DashPage = ({
   getDash,
   getDashboardLoading,
   getDashboardError,
@@ -87,6 +30,65 @@ const DashPage1 = ({
   deleteDashboardLoading,
   getDashboardsLoading,
 }) => {
+  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1500px");
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+      width: "70vw",
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+    },
+    paper: {
+      height: "7%",
+      paddingTop: "10px",
+      textAlign: "center",
+      boxShadow: "none",
+      textTransform: "uppercase",
+      color: theme.palette.text.primary,
+      backgroundColor: "transparent",
+    },
+    paperCreateTask: {
+      textAlign: "left",
+      boxShadow: "none",
+      color: theme.palette.text.secondary,
+      backgroundColor: "transparent",
+    },
+    paperEditAndDeleteTask: {
+      textAlign: "right",
+      boxShadow: "none",
+      color: theme.palette.text.secondary,
+      backgroundColor: "transparent",
+      marginLeft: "auto",
+    },
+    buttonContainer: {
+      width: "100%",
+      height: "10%",
+      display: "inline-flex",
+      backgroundColor: "transparent",
+      padding: "0 2vh",
+    },
+    button: {
+      margin: theme.spacing(1),
+      fontSize: matches ? "12px" : "15px",
+      backgroundImage: "linear-gradient(to bottom, #0066eb 21%, #7752ff 89%)",
+    },
+    tabContainer: {
+      height: "auto",
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      backgroundColor: "transparent",
+    },
+    circularProgress: {
+      color: theme.palette.spinner.main,
+    },
+    spinner: {
+      display: "flex",
+      flexGrow: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  }));
   const classes = useStyles();
 
   const [openCreateTask, setOpenCreateTask] = useState(false);
@@ -102,7 +104,7 @@ const DashPage1 = ({
     error: getAllUsersError,
     data: allUsers,
   } = useQuery(GET_ALL_USERS, {
-    fetchPolicy: "cache-first",
+    fetchPolicy: "network-only",
   });
   const loggedInUserId = userData?.me.id;
 
@@ -159,10 +161,14 @@ const DashPage1 = ({
         ) : (
           <>
             <Paper className={classes.paper}>
-              <Typography variant="h5">{name}</Typography>
+              <Typography variant={matches ? "subtitle1" : "h5"}>
+                {name}
+              </Typography>
             </Paper>
             <Paper className={classes.paper}>
-              <Typography variant="subtitle1">{description}</Typography>
+              <Typography variant={matches ? "caption" : "subtitle1"}>
+                {description}
+              </Typography>
             </Paper>
             {parseInt(loggedInUserId) === creator_id && (
               <Paper
@@ -174,7 +180,7 @@ const DashPage1 = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    size="medium"
+                    size={matches ? "small" : "medium"}
                     className={classes.button}
                     onClick={openCreateTaskModal}
                     startIcon={<NoteAddIcon />}
@@ -186,7 +192,7 @@ const DashPage1 = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    size="medium"
+                    size={matches ? "small" : "medium"}
                     className={classes.button}
                     onClick={openAddMembersModal}
                     startIcon={<SupervisedUserCircleIcon />}
@@ -196,7 +202,7 @@ const DashPage1 = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    size="medium"
+                    size={matches ? "small" : "medium"}
                     className={classes.button}
                     onClick={openEditDashboardModal}
                     startIcon={<EditIcon />}
@@ -206,7 +212,7 @@ const DashPage1 = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    size="medium"
+                    size={matches ? "small" : "medium"}
                     className={classes.button}
                     onClick={handleDelete}
                     startIcon={<DeleteForeverIcon />}
@@ -228,14 +234,14 @@ const DashPage1 = ({
             </Paper>
           </>
         )}
-        <Box mt={8}>
+        <Box mt={matches ? 2 : 6}>
           <Typography variant="body2" color="textSecondary" align="center">
             {getDashboardData &&
               `© Created by ${creator.firstname} ${creator.lastname}`}
           </Typography>
         </Box>
       </div>
-      <CreateTaskModal1
+      <CreateTaskModal
         getDash={getDash}
         loggedInUserId={loggedInUserId}
         members={members}
@@ -265,4 +271,4 @@ const DashPage1 = ({
   );
 };
 
-export default DashPage1;
+export default DashPage;

@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import TaskCard from "./TaskCard.jsx";
 
@@ -76,9 +77,13 @@ const TaskContainer = ({
   draggableId,
 }) => {
   const classes = useStyles();
+  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1500px");
   return (
     <Paper className={classes.paper} elevation={3}>
-      <Typography variant="h6" className={classes.statusHeader}>
+      <Typography
+        variant={matches ? "subtitle2" : "h6"}
+        className={classes.statusHeader}
+      >
         {status}
       </Typography>
       <Divider />

@@ -8,34 +8,23 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import TaskBoard from "./TaskBoard.jsx";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "100%",
-    height: "100%",
-    flex: "1 1 auto",
-  },
-  tabPanel: {
-    backgroundColor: "transparent",
-  },
-  tab: {
-    fontWeight: 700,
-    letterSpacing: "0.25vw",
-  },
-  appBar: {
-    backgroundColor: "transparent",
-  },
-  button: {
-    margin: theme.spacing(1),
-    backgroundImage: "linear-gradient(to bottom, #0066eb 21%, #7752ff 89%)",
-  },
-}));
-
 function TabPanel(props) {
-  const classes = useStyles();
+  const useStylesTabPanel = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+      width: "100%",
+      height: "100%",
+      flex: "1 1 auto",
+    },
+    tabPanel: {
+      backgroundColor: "transparent",
+    },
+  }));
+  const classes = useStylesTabPanel();
 
   const { children, value, index, ...other } = props;
 
@@ -77,6 +66,27 @@ export default function ScrollableTabsButtonAuto({
   dashboard,
   getDash,
 }) {
+  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1500px");
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+      width: "100%",
+      height: "100%",
+      flex: "1 1 auto",
+    },
+    tab: {
+      fontWeight: 700,
+      letterSpacing: "0.25vw",
+    },
+    appBar: {
+      backgroundColor: "transparent",
+    },
+    button: {
+      margin: theme.spacing(1),
+      fontSize: matches ? "12px" : "15px",
+      backgroundImage: "linear-gradient(to bottom, #0066eb 21%, #7752ff 89%)",
+    },
+  }));
   const classes = useStyles();
 
   const [value, setValue] = useState(0);
@@ -115,7 +125,7 @@ export default function ScrollableTabsButtonAuto({
             <Button
               variant="contained"
               color="primary"
-              size="medium"
+              size={matches ? "small" : "medium"}
               className={classes.button}
               onClick={open}
               startIcon={<NoteAddIcon />}
