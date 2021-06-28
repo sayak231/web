@@ -102,9 +102,6 @@ const App = () => {
             {
               method: "POST",
               credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-              },
             }
           );
         },
@@ -134,9 +131,6 @@ const App = () => {
     fetch("https://diy-tasks-server.herokuapp.com/graphql/refresh_token", {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
     }).then(async (x) => {
       const { accessToken } = await x.json();
       setAccessToken(accessToken);
