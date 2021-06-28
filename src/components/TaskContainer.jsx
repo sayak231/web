@@ -77,7 +77,7 @@ const TaskContainer = ({
   draggableId,
 }) => {
   const classes = useStyles();
-  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1500px");
+  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1920px");
   return (
     <Paper className={classes.paper} elevation={3}>
       <Typography

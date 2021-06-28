@@ -66,7 +66,7 @@ export default function ScrollableTabsButtonAuto({
   dashboard,
   getDash,
 }) {
-  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1500px");
+  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1920px");
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,

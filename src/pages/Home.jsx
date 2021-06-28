@@ -6,7 +6,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import home from "../assets/images/hme.jpg";
 
 const Home = ({ history }) => {
-  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1500px");
+  const matches = useMediaQuery("(min-width:1024px) and (max-width: 1920px");
   const useStyles = makeStyles((theme) => ({
     Container: {
       backgroundImage: theme.palette.mainBackgroundColor,
