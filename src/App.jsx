@@ -97,10 +97,13 @@ const App = () => {
           }
         },
         fetchAccessToken: () => {
-          return fetch("http://localhost:4000/refresh_token", {
-            method: "POST",
-            credentials: "include",
-          });
+          return fetch(
+            "https://diy-tasks-server.herokuapp.com/graphql/refresh_token",
+            {
+              method: "POST",
+              credentials: "include",
+            }
+          );
         },
         handleFetch: (accessToken) => {
           setAccessToken(accessToken);
@@ -113,7 +116,7 @@ const App = () => {
       requestLink,
 
       new HttpLink({
-        uri: "http://localhost:4000/graphql",
+        uri: "https://diy-tasks-server.herokuapp.com/graphql/graphql",
         credentials: "include",
       }),
     ]),
@@ -125,7 +128,7 @@ const App = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:4000/refresh_token", {
+    fetch("https://diy-tasks-server.herokuapp.com/graphql/refresh_token", {
       method: "POST",
       credentials: "include",
     }).then(async (x) => {
